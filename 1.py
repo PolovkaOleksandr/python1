@@ -8,11 +8,17 @@ root.geometry("400x500")
 button_frame = Frame(root)
 button_frame.pack(side=RIGHT)
 
+# Create a label above the button
+lab1 = Label(button_frame, text="0 дн 0 міс 0 р ")
+lab1.pack(side=TOP)
+
 # Create a button that calls the main function when clicked
 def main():
     values1 = [entry.get() for entry in entries1]
     values2 = [entry.get() for entry in entries2]
-
+    days=0
+    months=0
+    years=0
     for i, (value1, value2) in enumerate(zip(values1, values2)):
         try:
             parts1 = value1.split('.')
@@ -35,14 +41,32 @@ def main():
                 else:
                     year_diff = year2 - year1
 
+                
                 labels[i].config(text=f"{day_diff} дн {month_diff} міс {year_diff} р")
+                days=days+day_diff
+                if days>29:
+                    days=days-30
+                    months=months+1
+                months=months+month_diff
+                if months>11:
+                    months=months-1
+                    years=years+1
+                years=years+year_diff
+                lab1.config(text=f"{days} дн {months} міс {years} р")
             else:
                 labels[i].config(text="")
         except ValueError as e:
             labels[i].config(text=f"Invalid date format: {e}")
-
+                
 button = Button(button_frame, text="Запустити", command=main)
 button.pack()
+
+# Create three entries below the button
+entries3 = []
+for i in range(3):
+    entry = Entry(button_frame, width=20)
+    entry.pack()
+    entries3.append(entry)
 
 # Create two frames for the columns
 frame1 = Frame(root)
@@ -71,8 +95,5 @@ for i in range(15):
     label = Label(frame3, text="")
     label.pack()
     labels.append(label)
-
-lab1 = Label(text="0 дн 0 міс 0 р ")
-lab1.pack(side=LEFT)
 
 root.mainloop()
